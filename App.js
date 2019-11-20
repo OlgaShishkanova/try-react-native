@@ -1,32 +1,40 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Button, Text } from 'react-native';
+import {
+  StyleSheet, FlatList, View, Button
+} from 'react-native';
+import GoalItem from './components/GoalItem'
+import GoalInput from './components/Goalnput';
 
 export default function App() {
-  const [enteredGoal, setEnteredGoal] = useState('')
-  const [courseGoals, setCurrentGoals] = useState([])
 
-  const goalInputHandler = (enteredText) => {
-    setEnteredGoal(enteredText)
+  const [courseGoals, setCurrentGoals] = useState([])
+  const [isAddMode, setIsAddMode] = useState(false)
+
+  const addGoalHandler = goalTitle => {
+    setCurrentGoals(currentGoals =>
+      [...currentGoals, { id: Math.random().toString(), value: goalTitle }
+      ])
+    cancelGoalAdditionHandler()
   }
 
-  const addGoalHandler = () => {
-    setCurrentGoals(currentGoals => [...currentGoals, enteredGoal])
+  const removeGoalHandler = (goalId) => {
+    setCurrentGoals(currentGoals => {
+      return currentGoals.filter((goal) => goal.id !== goalId);
+    });
+  }
+
+  const cancelGoalAdditionHandler = () => {
+    setIsAddMode(false);
   }
 
   return (
     <View style={styles.screen}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Course Goal"
-          style={styles.input}
-          onChangeText={goalInputHandler}
-          value={enteredGoal}
-        />
-        <Button title="ADD" onPress={addGoalHandler} />
-      </View>
-      <View>
-        {courseGoals.map((goal, key) => <View key={key} style={styles.listItem}><Text>{goal}</Text></View>)}
-      </View>
+      <Button title="Add New Goal" onPress={() => setIsAddMode(true)} />
+      <GoalInput onAddGoal={addGoalHandler} visible={isAddMode} onCancel={cancelGoalAdditionHandler} />
+      <FlatList keyExtractor={(item, index) => item.id} data={courseGoals} renderItem={itemData =>
+        (<GoalItem id={itemData.item.id} onDelete={removeGoalHandler} title={itemData.item.value} />
+        )} />
+
     </View>
   );
 }
@@ -35,22 +43,4 @@ const styles = StyleSheet.create({
   screen: {
     padding: 50
   },
-  inputContainer: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center' 
-  },
-  input: { 
-    width: '80%', 
-    borderBottomColor: 'black', 
-    borderWidth: 1, 
-    padding: 10 
-  },
-  listItem:{
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: "#ccc",
-    borderColor: "black",
-    borderWidth: 1,
-  }
 });
