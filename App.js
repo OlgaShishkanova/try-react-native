@@ -1,49 +1,20 @@
-import React, { useState } from 'react';
-import {
-  StyleSheet, FlatList, View, Button
-} from 'react-native';
-import GoalItem from './components/GoalItem'
-import GoalInput from './components/Goalnput';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
 
-  const [courseGoals, setCurrentGoals] = useState([])
-  const [isAddMode, setIsAddMode] = useState(false)
-
-  const addGoalHandler = goalTitle => {
-    if(goalTitle.length === 0){
-      return;
-    }
-    setCurrentGoals(currentGoals =>
-      [...currentGoals, { id: Math.random().toString(), value: goalTitle }
-      ])
-    cancelGoalAdditionHandler()
-  }
-
-  const removeGoalHandler = (goalId) => {
-    setCurrentGoals(currentGoals => {
-      return currentGoals.filter((goal) => goal.id !== goalId);
-    });
-  }
-
-  const cancelGoalAdditionHandler = () => {
-    setIsAddMode(false);
-  }
-
   return (
-    <View style={styles.screen}>
-      <Button title="Add New Goal" onPress={() => setIsAddMode(true)} />
-      <GoalInput onAddGoal={addGoalHandler} visible={isAddMode} onCancel={cancelGoalAdditionHandler} />
-      <FlatList keyExtractor={(item, index) => item.id} data={courseGoals} renderItem={itemData =>
-        (<GoalItem id={itemData.item.id} onDelete={removeGoalHandler} title={itemData.item.value} />
-        )} />
-
+    <View style={styles.container}>
+      <Text>Open up App.js to start working on your app!</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    padding: 50
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
