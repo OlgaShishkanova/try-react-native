@@ -4,6 +4,8 @@ import Card from '../components/Card';
 import Colors from '../constants/colors';
 import Input from '../components/Input';
 import NumberContainer from '../components/NumberContainer';
+import MainButton from '../components/MainButton';
+import {Ionicons} from '@expo/vector-icons'
 
 const StartGameScreen = props => {
 
@@ -39,7 +41,7 @@ const StartGameScreen = props => {
             <Card style={styles.summaryContainer}>
                 <Text>You selected</Text>
                 <NumberContainer>{selectedNumber}</NumberContainer>
-                <Button title="START GAME" onPress={() => {props.onStartGame(selectedNumber)}}/>
+                <MainButton onPress={() => { props.onStartGame(selectedNumber) }}><Ionicons name="md-happy" size={24} color="yellow"/></MainButton>
             </Card>
     }
 
@@ -48,7 +50,7 @@ const StartGameScreen = props => {
             <View style={styles.screen}>
                 <Text style={styles.title}>
                     Start a New Game!
-            </Text>
+                </Text>
                 <Card style={styles.inputContainer}>
                     <Text>Select a Number</Text>
                     <Input style={styles.input}

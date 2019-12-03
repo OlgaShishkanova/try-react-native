@@ -11,8 +11,8 @@ const GameOverScreen = props => {
             <View style={styles.imageContainer}>
                 <Image
                     fadeDuration={1000}
-                    //source={require('../assets/success.png')}
-                    source={{ uri: 'https://ichef.bbci.co.uk/images/ic/640x360/p0659ssc.jpg' }}
+                    source={require('../assets/success.png')}
+                    //source={{ uri: 'https://ichef.bbci.co.uk/images/ic/640x360/p0659ssc.jpg' }}
                     style={styles.image}
                     resizeMode="cover"
                 />
@@ -21,7 +21,7 @@ const GameOverScreen = props => {
             <Text>
                 Number of rounds: {props.roundsNumber}
             </Text>
-            <Text>Number was: {props.userNumber}</Text>
+            <Text style={DefaultStyles.title}>Number was: <Text>{props.userNumber}</Text></Text>
             <Button title="NEW GAME" onPress={props.onRestart} />
         </View>
     )
