@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 import Colors from '../constants/colors';
 
-// we don't need this file in real apps, because they will take files with .androd and .ios names
 const MainButton = props => {
- 
+    let ButtonComponent = TouchableOpacity;
+
+    if (Platform.Version >= 21) {
+        ButtonComponent = TouchableNativeFeedback
+    }
     return (
         <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={props.onPress}>
+            <ButtonComponent onPress={props.onPress}>
                 <View style={styles.button}>
                     <Text style={styles.buttonText}>
                         {props.children}
                     </Text>
                 </View>
-            </TouchableOpacity>
+            </ButtonComponent>
         </View>
     )
 }

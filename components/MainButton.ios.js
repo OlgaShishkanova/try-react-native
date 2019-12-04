@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Colors from '../constants/colors';
 
-// we don't need this file in real apps, because they will take files with .androd and .ios names
 const MainButton = props => {
  
     return (

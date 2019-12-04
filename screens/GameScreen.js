@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Alert, ScrollView, FlatList } from 'react-native'
+import { View, Text, StyleSheet, Button, Alert, ScrollView, FlatList, Dimensions } from 'react-native'
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card';
+import {ScreenOrientation} from 'expo'
 
 const generateRandomBetween = (min, max, exclude) => {
     min = Math.ceil(min);
@@ -29,18 +30,22 @@ const renderListItemForFLatList = (listLength, itemData) => (
 )
 
 const GameScreen = props => {
+
+    //lock that screen in portrait orientation
+    // ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT)
+
     const initialGuess = generateRandomBetween(1, 99, props.userChoice)
     const [currentGuess, setCurrentGuess] = useState(initialGuess)
     const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()])
     const currentLow = useRef(1)
     const currentHigh = useRef(100);
 
-    const {userChoice, onGameOver} = props;
+    const { userChoice, onGameOver } = props;
     useEffect(() => {
-        if(currentGuess === userChoice){
+        if (currentGuess === userChoice) {
             onGameOver(pastGuesses.length);
         }
-    }, [currentGuess,userChoice, onGameOver]);
+    }, [currentGuess, userChoice, onGameOver]);
 
     const nextGuessHandler = direction => {
         if ((direction === 'lower' && currentGuess < props.userChoice)
@@ -48,9 +53,9 @@ const GameScreen = props => {
             Alert.alert("Don't lie!", "You know that this is wrong...", [{ text: "Sorry!", style: "cancel" }])
             return;
         }
-        if(direction === 'lower') {
-            currentHigh.current = currentGuess - 1;          
-        }else {
+        if (direction === 'lower') {
+            currentHigh.current = currentGuess - 1;
+        } else {
             currentLow.current = currentGuess + 1;
         }
 
@@ -59,6 +64,32 @@ const GameScreen = props => {
         //setRounds(currentRounds => currentRounds+1)
         setPastGuesses(curPastGuesses => [nextNumber.toString(), ...curPastGuesses])
     }
+
+    if (Dimensions.get('window').height < 500) {
+        return (
+            <View style={styles.screen}>
+                <Text style={styles.headerTitle}>Opponent's Guess</Text>
+                <View style={styles.controls}>
+                <Button title="LOWER" onPress={() => { nextGuessHandler('lower') }} />
+                <NumberContainer>{currentGuess}</NumberContainer>
+                <Button title="GREATER" onPress={() => { nextGuessHandler('greater') }} />
+                </View>
+
+                <View style={styles.listContainer}>
+                    {/* <ScrollView contentContainerStyle={styles.list}>
+                {pastGuesses.map((guess, index) => renderListItemForScroll(guess, pastGuesses.length - index))}
+            </ScrollView> */}
+                    <FlatList
+                        keyExtractor={(item) => item}
+                        data={pastGuesses}
+                        renderItem={renderListItemForFLatList.bind(this, pastGuesses.length)}
+                        contentContainerStyle={styles.list}
+                    />
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View style={styles.screen}>
             <Text style={styles.headerTitle}>Opponent's Guess</Text>
@@ -68,17 +99,16 @@ const GameScreen = props => {
                 <Button title="GREATER" onPress={() => { nextGuessHandler('greater') }} />
             </Card>
             <View style={styles.listContainer}>
-            {/* <ScrollView contentContainerStyle={styles.list}>
+                {/* <ScrollView contentContainerStyle={styles.list}>
                 {pastGuesses.map((guess, index) => renderListItemForScroll(guess, pastGuesses.length - index))}
             </ScrollView> */}
-            <FlatList 
-            keyExtractor={(item) => item} 
-            data={pastGuesses} 
-            renderItem={renderListItemForFLatList.bind(this, pastGuesses.length)}
-            contentContainerStyle={styles.list}
-            />
+                <FlatList
+                    keyExtractor={(item) => item}
+                    data={pastGuesses}
+                    renderItem={renderListItemForFLatList.bind(this, pastGuesses.length)}
+                    contentContainerStyle={styles.list}
+                />
             </View>
-            
         </View>
     )
 }
@@ -91,15 +121,20 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: 20,
+        marginTop: Dimensions.get('window').height > 600 ? 20 : 10,
         width: 300,
         maxWidth: '80%'
     },
-    listContainer:{
+    controls:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    listContainer: {
         flex: 1,
         width: '60%'
     },
-    list:{
+    list: {
         flexGrow: 1,
         //alignItems: "center",
         justifyContent: "flex-end"
